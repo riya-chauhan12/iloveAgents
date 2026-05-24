@@ -11,8 +11,12 @@ export default function Navbar({ sidebarOpen, setSidebarOpen }) {
     if (saved === 'light') {
       setDarkMode(false)
       document.documentElement.classList.remove('dark')
+    } else {
+      // Default to dark; ensure class is present
+      document.documentElement.classList.add('dark')
     }
   }, [])
+
 
   const toggleTheme = () => {
     const next = !darkMode
