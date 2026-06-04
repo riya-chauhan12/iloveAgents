@@ -44,10 +44,16 @@ pull_request_rules:
         method: merge
 
   # Merge conflict rule
-  # Notifies the author when their PR has a merge conflict that must be resolved.
+  # Notifies the author only when GitHub has CONFIRMED the PR has a real merge
+  # conflict. The "conflict" attribute is set by GitHub after it finishes
+  # computing mergeability — adding "-draft" ensures we don't fire on PRs still
+  # being processed, and "-closed" prevents triggering on already-closed PRs.
   - name: Notify author on merge conflict
     conditions:
       - conflict
+      - -draft
+      - -closed
+      - -merged
     actions:
       comment:
         message: |
@@ -56,23 +62,46 @@ pull_request_rules:
           Need help? Check out [resolving merge conflicts](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line).
           — [@AditthyaSS](https://github.com/AditthyaSS)
 
-  # Lock file rule
-  # Flags PRs that modify package-lock.json without a corresponding change to package.json.
-  # This is usually caused by running `npm install` locally with a mismatched npm version.
-  - name: Flag unintentional package-lock.json changes
+  # Lock file rules — two separate rules for two different scenarios.
+  # Rule A: package-lock.json changed but package.json was NOT touched.
+  # Usually caused by running npm install with a different npm version locally.
+  - name: Flag package-lock.json changed without package.json
     conditions:
       - "files~=^package-lock\\.json$"
       - "-files~=^package\\.json$"
     actions:
       comment:
         message: |
-          ⚠️ Hey @{{author}}! It looks like only `package-lock.json` was changed but `package.json` was not.
+          hey @{{author}}! 👋
+          It looks like `package-lock.json` was changed but `package.json` was not.
           This is usually unintentional — it happens when `npm install` is run locally with a different npm version.
-          Please revert the `package-lock.json` changes by running:
-          ```
-          git checkout package-lock.json
-          ```
-          Then push again. If you intentionally changed dependencies, make sure `package.json` is also updated.
+          Please revert it by running:
+          `git checkout package-lock.json`
+          Then push again. 🙏
+          — [@AditthyaSS](https://github.com/AditthyaSS)
+      label:
+        add:
+          - needs-fix
+
+  # Rule B: package.json changed but package-lock.json was NOT updated.
+  # Could mean missing npm install after adding a dependency, or just a
+  # metadata-only change (scripts, description, version) which is fine.
+  - name: Flag package.json changed without package-lock.json
+    conditions:
+      - "files~=^package\\.json$"
+      - "-files~=^package-lock\\.json$"
+    actions:
+      comment:
+        message: |
+          hey @{{author}}! 👋
+          You changed `package.json` but `package-lock.json` was not updated.
+          Quick check before we review:
+          → If you added or removed a package:
+          Please run `npm install` and commit the updated `package-lock.json` too.
+          Both files need to change together. ✅
+          → If you only changed metadata (scripts, description, version etc):
+          You can safely ignore this message. ✅
+          Just wanted to make sure nothing was missed! 🙏
           — [@AditthyaSS](https://github.com/AditthyaSS)
       label:
         add:
