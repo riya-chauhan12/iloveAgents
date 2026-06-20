@@ -17,6 +17,7 @@ import WorkflowDetail from './pages/WorkflowDetail'
 import WorkflowRunner from './pages/WorkflowRunner'
 import NotFoundPage from './pages/NotFoundPage'
 import SuitesPage from './pages/SuitesPage'
+import ErrorBoundary from './components/ErrorBoundary'
 
 // Shared layout: Navbar + Sidebar + main content area
 function MainLayout({ sidebarOpen, setSidebarOpen }) {
@@ -41,27 +42,29 @@ export default function App() {
     <div className="min-h-screen transition-theme dark:bg-surface bg-gray-50">
       <ScrollToTop />
       <ScrollToBottom />
-      <Routes>
-        {/* Battle Mode — full-screen, own layout */}
-        <Route path="/battle" element={<BattleModeLanding />} />
-        <Route path="/battle/setup" element={<BattleModeSetup />} />
-        <Route path="/battle/arena" element={<BattleModeArena />} />
-        <Route path="/battle/winner" element={<BattleModeWinner />} />
+      <ErrorBoundary>
+        <Routes>
+          {/* Battle Mode — full-screen, own layout */}
+          <Route path="/battle" element={<BattleModeLanding />} />
+          <Route path="/battle/setup" element={<BattleModeSetup />} />
+          <Route path="/battle/arena" element={<BattleModeArena />} />
+          <Route path="/battle/winner" element={<BattleModeWinner />} />
 
-        {/* Main app layout — all routes share Navbar + Sidebar */}
-        <Route element={<MainLayout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/agent/:id" element={<AgentPage />} />
-          {/* Suites */}
-          <Route path="/suites" element={<SuitesPage />} />
-          {/* Workflow routes */}
-          <Route path="/workflows" element={<WorkflowLibrary />} />
-          <Route path="/workflows/build" element={<WorkflowBuilder />} />
-          <Route path="/workflows/:id" element={<WorkflowDetail />} />
-          <Route path="/workflows/:id/run" element={<WorkflowRunner />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
-      </Routes>
+          {/* Main app layout — all routes share Navbar + Sidebar */}
+          <Route element={<MainLayout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/agent/:id" element={<AgentPage />} />
+            {/* Suites */}
+            <Route path="/suites" element={<SuitesPage />} />
+            {/* Workflow routes */}
+            <Route path="/workflows" element={<WorkflowLibrary />} />
+            <Route path="/workflows/build" element={<WorkflowBuilder />} />
+            <Route path="/workflows/:id" element={<WorkflowDetail />} />
+            <Route path="/workflows/:id/run" element={<WorkflowRunner />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
+        </Routes>
+      </ErrorBoundary>
     </div>
   )
 }
