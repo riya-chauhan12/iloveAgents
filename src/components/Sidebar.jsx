@@ -91,7 +91,7 @@ export default function Sidebar({ open, onClose }) {
             to="/suites"
             onClick={onClose}
             className={({ isActive }) =>
-              `flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[13px] font-medium transition-colors mb-2
+              `flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[13px] font-medium transition-colors mb-0.5
               ${isActive
                 ? 'bg-accent/10 text-accent dark:text-accent'
                 : 'dark:text-text-secondary dark:hover:text-text-primary dark:hover:bg-surface-hover text-gray-600 hover:text-gray-900 hover:bg-gray-50'
@@ -100,6 +100,22 @@ export default function Sidebar({ open, onClose }) {
           >
             <span className="text-sm">✨</span>
             <span className="truncate">Suites</span>
+          </NavLink>
+
+          {/* Scheduler link */}
+          <NavLink
+            to="/scheduler"
+            onClick={onClose}
+            className={({ isActive }) =>
+              `flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[13px] font-medium transition-colors mb-0.5
+              ${isActive
+                ? 'bg-accent/10 text-accent dark:text-accent'
+                : 'dark:text-text-secondary dark:hover:text-text-primary dark:hover:bg-surface-hover text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`
+            }
+          >
+            <Icons.CalendarClock size={15} className="flex-shrink-0" />
+            <span className="truncate">Scheduler</span>
           </NavLink>
 
           <div className="border-b dark:border-border border-gray-100 mb-2" />
