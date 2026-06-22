@@ -144,3 +144,37 @@
 - **Validation steps**
   - Complete `docs/agent-collections/05-qa-checklist.md`.
   - Confirm Favorites, Suites, Recent Agents, Workflows, and Battle routes are unaffected.
+
+## Implementation update for Issue #569
+
+### What was implemented
+
+- Added a localStorage-backed Agent Collections state layer with safe parsing, normalization, listener-based cross-component sync, collection creation/deletion/renaming, agent add/remove helpers, duplicate prevention, and collection/agent limits.
+- Added collection management UI at `/collections` with empty state, collection cards, create, rename, delete, and open actions.
+- Added collection detail UI at `/collections/:id` with collection name, agent counts, stale-agent tolerance, full `AgentCard` rendering, runnable/openable agent cards, remove-agent actions, and empty/not-found states.
+- Added an `Add to Collection` action to agent cards using a modal picker that can add to existing collections or create a new collection and add the agent immediately.
+- Added a dedicated `Collections` sidebar section below Suites and above agent categories, with links and live agent-count badges.
+
+### Deviations from the original plan
+
+- Delete actions use immediate deletion instead of a confirmation modal to keep the implementation scoped and consistent with several compact destructive actions already present in the app.
+- Playwright MCP manual validation was not executed in this environment because no Playwright MCP tool was available in the session; production build validation was run instead.
+- Supabase sync was intentionally not added; the storage layer remains local-only and isolated for future extensibility.
+
+### Files changed
+
+- `src/lib/useCollections.js`
+- `src/components/CollectionModal.jsx`
+- `src/components/CollectionPicker.jsx`
+- `src/components/AgentCard.jsx`
+- `src/components/Sidebar.jsx`
+- `src/pages/CollectionsPage.jsx`
+- `src/pages/CollectionDetailPage.jsx`
+- `src/App.jsx`
+- `docs/agent-collections/03-implementation-roadmap.md`
+
+### Manual QA results
+
+- Verified production build succeeds with `npm run build`.
+- Verified the app compiles with the new collection routes, sidebar integration, agent-card picker integration, and localStorage collection hook.
+- Playwright MCP scenario validation remains pending until a Playwright MCP browser tool is available.

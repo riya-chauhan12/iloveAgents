@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import * as Icons from 'lucide-react'
 import { loadAllAgents } from '../agents/registry'
+import { useCollections } from '../lib/useCollections'
 
 export default function Sidebar({ open, onClose }) {
   const [sidebarSearchQuery, setSidebarSearchQuery] = useState('')
   const [openCategories, setOpenCategories] = useState({})
   const [searchExpandedCategories, setSearchExpandedCategories] = useState({})
   const [agents, setAgents] = useState([])
+  const { collections } = useCollections()
   const location = useLocation()
 
   useEffect(() => {
@@ -170,6 +172,45 @@ export default function Sidebar({ open, onClose }) {
               </>
             )}
           </NavLink>
+
+          <div className="mb-2 rounded-lg border border-gray-100/80 p-2 dark:border-border/80">
+            <div className="mb-1 flex items-center justify-between px-1.5 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-text-muted">
+              <span>Collections</span>
+              <span className="rounded-full bg-accent/15 px-1.5 py-0.5 text-[9px] text-accent">{collections.length}</span>
+            </div>
+            <NavLink
+              to="/collections"
+              onClick={onClose}
+              className={({ isActive }) =>
+                `relative mb-0.5 flex items-center gap-2.5 rounded-md py-1.5 pl-2 pr-2 text-[12px] font-medium transition-all duration-200 group
+                ${isActive && location.pathname === '/collections'
+                  ? 'bg-accent/15 text-accent font-semibold shadow-sm'
+                  : 'text-gray-700 hover:bg-gray-150/50 hover:text-gray-950 dark:text-text-secondary dark:hover:bg-white/10 dark:hover:text-text-primary'
+                }`
+              }
+            >
+              <Icons.FolderPlus size={14} />
+              <span className="truncate">All Collections</span>
+            </NavLink>
+            {collections.slice(0, 10).map((collection) => (
+              <NavLink
+                key={collection.id}
+                to={`/collections/${collection.id}`}
+                onClick={onClose}
+                className={({ isActive }) =>
+                  `relative flex items-center gap-2.5 rounded-md py-1.5 pl-2 pr-2 text-[12px] font-medium transition-all duration-200 group
+                  ${isActive
+                    ? 'bg-accent/15 text-accent font-semibold shadow-sm'
+                    : 'text-gray-700 hover:bg-gray-150/50 hover:text-gray-950 dark:text-text-secondary dark:hover:bg-white/10 dark:hover:text-text-primary'
+                  }`
+                }
+              >
+                <Icons.Folder size={14} className="flex-shrink-0" />
+                <span className="min-w-0 flex-1 truncate">{collection.name}</span>
+                <span className="rounded-full bg-accent/15 px-1.5 py-0.5 text-[9px] font-bold text-accent">{collection.agentIds.length}</span>
+              </NavLink>
+            ))}
+          </div>
 
           <div className="border-b dark:border-border border-gray-100 mb-2" />
 
