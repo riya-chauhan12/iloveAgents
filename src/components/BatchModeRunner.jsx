@@ -321,8 +321,8 @@ export default function BatchModeRunner({ agent, provider, apiKey, selectedModel
           )}
         </div>
 
-        {/* Header confirmation + column picker for uploaded CSVs */}
-        {csvRawRows && csvRawRows[0]?.length > 1 && (
+        {/* Header confirmation (always shown for CSVs) + column picker (multi-column only) */}
+        {csvRawRows && csvRawRows.length > 0 && (
           <div className="mt-2 space-y-2">
             <label className="flex items-center gap-2 text-[11px] dark:text-text-secondary text-gray-500 cursor-pointer">
               <input
@@ -333,19 +333,21 @@ export default function BatchModeRunner({ agent, provider, apiKey, selectedModel
               />
               First row is a header (not a data item)
             </label>
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] dark:text-text-muted text-gray-400">Use column:</span>
-              <CustomSelect
-                value={String(csvColumnIndex)}
-                onChange={handleCsvColumnChange}
-                options={
-                  csvHasHeader
-                    ? csvHeaders.map((h, i) => ({ value: String(i), label: h || `Column ${i + 1}` }))
-                    : csvRawRows[0].map((_, i) => ({ value: String(i), label: `Column ${i + 1}` }))
-                }
-                triggerClassName="h-7 text-xs"
-              />
-            </div>
+            {csvRawRows[0]?.length > 1 && (
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] dark:text-text-muted text-gray-400">Use column:</span>
+                <CustomSelect
+                  value={String(csvColumnIndex)}
+                  onChange={handleCsvColumnChange}
+                  options={
+                    csvHasHeader
+                      ? csvHeaders.map((h, i) => ({ value: String(i), label: h || `Column ${i + 1}` }))
+                      : csvRawRows[0].map((_, i) => ({ value: String(i), label: `Column ${i + 1}` }))
+                  }
+                  triggerClassName="h-7 text-xs"
+                />
+              </div>
+            )}
             <p className="text-[10px] dark:text-text-muted text-gray-400">
               {csvDataRows?.length || 0} row{csvDataRows?.length !== 1 ? 's' : ''} will be used as batch items.
             </p>
