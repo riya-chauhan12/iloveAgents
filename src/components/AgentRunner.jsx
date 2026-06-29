@@ -112,6 +112,7 @@ export default function AgentRunner({ agent }) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
     }
+    setLoading(false);
     setOutput(null);
     setStreamingOutput("");
     setIsStreaming(false);
