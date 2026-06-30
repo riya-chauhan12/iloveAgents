@@ -110,7 +110,9 @@ export default function OutputRenderer({ content, outputType, agentName, systemP
         </span>
         <div className="flex items-center gap-2">
           {/* VoiceOutput — reads the response aloud */}
-          <VoiceOutput text={content} />
+          <VoiceOutput
+          text={typeof content === 'string' ? content : JSON.stringify(content)}
+          />
 
           <CopyButton text={content} label="Copy output" />
           <CopyButton text={stripMarkdown(content)} label="Copy as Plain Text" icon={FileText} />

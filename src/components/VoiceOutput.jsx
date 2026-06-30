@@ -14,8 +14,8 @@ import { Volume2, VolumeX, Square } from "lucide-react";
 // Strip markdown so the synthesizer doesn't read "hashtag" or "asterisk"
 function stripMarkdown(md = "") {
   return md
-    .replace(/```[\s\S]*?```/g, "") // fenced code blocks
-    .replace(/`[^`]*`/g, "")        // inline code
+    .replace(/```[a-zA-Z]*\n?([\s\S]*?)```/g, "$1") // fenced code blocks — keep content
+    .replace(/`([^`]*)`/g, "$1")        // inline code — keep content
     .replace(/#{1,6}\s+/g, "")      // headings
     .replace(/\*{1,2}([^*]+)\*{1,2}/g, "$1") // bold / italic
     .replace(/_{1,2}([^_]+)_{1,2}/g, "$1")
